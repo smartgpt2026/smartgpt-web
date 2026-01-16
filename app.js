@@ -4,11 +4,15 @@ async function send() {
   const chat = document.getElementById("chat");
   const input = document.getElementById("input");
   const apiKey = document.getElementById("key").value;
-
   const text = input.value;
   input.value = "";
 
-  chat.innerHTML += `<div><b>Du:</b> ${text}</div>`;
+  // User bubble
+  const userMsg = document.createElement("div");
+  userMsg.className = "msg-user";
+  userMsg.innerText = text;
+  chat.appendChild(userMsg);
+
   messages.push({ role: "user", content: text });
 
   const res = await fetch("https://api.openai.com/v1/chat/completions", {
@@ -26,7 +30,12 @@ async function send() {
   const data = await res.json();
   const reply = data.choices?.[0]?.message?.content || "Keine Antwort";
 
-  chat.innerHTML += `<div><b>Bot:</b> ${reply}</div>`;
+  // Bot bubble
+  const botMsg = document.createElement("div");
+  botMsg.className = "msg-bot";
+  botMsg.innerText = reply;
+  chat.appendChild(botMsg);
+
   messages.push({ role: "assistant", content: reply });
 
   chat.scrollTop = chat.scrollHeight;
