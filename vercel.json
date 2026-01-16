@@ -1,7 +1,8 @@
 {
   "functions": {
     "api/chat.ts": {
-      "runtime": "edge"
+      "runtime": "edge",
+      "entrypoint": "api/chat.ts"
     }
   }
 }
