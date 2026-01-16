@@ -1,42 +1,31 @@
-let messages = [];
-
 async function send() {
   const chat = document.getElementById("chat");
   const input = document.getElementById("input");
-  const apiKey = document.getElementById("key").value;
-  const text = input.value;
+  const text = input.value.trim();
+  if (!text) return;
   input.value = "";
 
-  // User bubble
+  // User Bubble
   const userMsg = document.createElement("div");
   userMsg.className = "msg-user";
   userMsg.innerText = text;
   chat.appendChild(userMsg);
+  chat.scrollTop = chat.scrollHeight;
 
-  messages.push({ role: "user", content: text });
-
-  const res = await fetch("https://api.openai.com/v1/chat/completions", {
+  // Anfrage an Backend
+  const res = await fetch("/api/chat", {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${apiKey}`
-    },
-    body: JSON.stringify({
-      model: "gpt-4o-mini",
-      messages
-    })
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ message: text })
   });
 
   const data = await res.json();
-  const reply = data.choices?.[0]?.message?.content || "Keine Antwort";
+  const reply = data.reply || "Keine Antwort";
 
-  // Bot bubble
+  // Bot Bubble
   const botMsg = document.createElement("div");
   botMsg.className = "msg-bot";
   botMsg.innerText = reply;
   chat.appendChild(botMsg);
-
-  messages.push({ role: "assistant", content: reply });
-
   chat.scrollTop = chat.scrollHeight;
 }
